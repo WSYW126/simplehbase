@@ -9,13 +9,16 @@
 	<version>0.98.2</version>
 	<name>simplehbase</name>
 
+	<properties>
+		<org.apache.hbase.version>1.6.0</org.apache.hbase.version>
+	</properties>
 
 	<dependencies>
 
 		<dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-client</artifactId>  
-            <version>0.98.8-hadoop2</version>
+            <version>${org.apache.hbase.version}</version>
 			
 			<exclusions> 
 				
@@ -60,7 +63,7 @@
 		<dependency>
 			<groupId>org.apache.hbase</groupId>
 			<artifactId>hbase-annotations</artifactId>
-			<version>0.98.8-hadoop2</version>
+			<version>${org.apache.hbase.version}</version>
 			
 			<exclusions> 			
 		
@@ -84,7 +87,7 @@
 		<dependency>
 			<groupId>org.apache.hbase</groupId>
 			<artifactId>hbase-common</artifactId>
-			<version>0.98.8-hadoop2</version>
+			<version>${org.apache.hbase.version}</version>
 				<exclusions> 						
 					<exclusion>
 						<groupId>commons-collections</groupId>
@@ -117,7 +120,7 @@
 		<dependency>
 			<groupId>org.apache.hbase</groupId>
 			<artifactId>hbase-protocol</artifactId>
-			<version>0.98.8-hadoop2</version>
+			<version>${org.apache.hbase.version}</version>
 		</dependency>	
 			
 		<dependency>
