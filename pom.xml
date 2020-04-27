@@ -6,16 +6,19 @@
 	<groupId>allen</groupId>
 	<artifactId>simplehbase</artifactId>
 	<packaging>jar</packaging>
-	<version>0.98.2</version>
+	<version>2.0.0</version>
 	<name>simplehbase</name>
 
+	<properties>
+		<org.apache.hbase.version>2.0.0</org.apache.hbase.version>
+	</properties>
 
 	<dependencies>
 
 		<dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-client</artifactId>  
-            <version>0.98.8-hadoop2</version>
+            <version>${org.apache.hbase.version}</version>
 			
 			<exclusions> 
 				
@@ -60,7 +63,7 @@
 		<dependency>
 			<groupId>org.apache.hbase</groupId>
 			<artifactId>hbase-annotations</artifactId>
-			<version>0.98.8-hadoop2</version>
+			<version>${org.apache.hbase.version}</version>
 			
 			<exclusions> 			
 		
@@ -84,7 +87,7 @@
 		<dependency>
 			<groupId>org.apache.hbase</groupId>
 			<artifactId>hbase-common</artifactId>
-			<version>0.98.8-hadoop2</version>
+			<version>${org.apache.hbase.version}</version>
 				<exclusions> 						
 					<exclusion>
 						<groupId>commons-collections</groupId>
@@ -117,13 +120,19 @@
 		<dependency>
 			<groupId>org.apache.hbase</groupId>
 			<artifactId>hbase-protocol</artifactId>
-			<version>0.98.8-hadoop2</version>
-		</dependency>	
-			
+			<version>${org.apache.hbase.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.hbase</groupId>
+			<artifactId>hbase-endpoint</artifactId>
+			<version>${org.apache.hbase.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.apache.hadoop</groupId>
 			<artifactId>hadoop-common</artifactId>
-			<version>2.2.0</version>
+			<version>2.7.4</version>
 			
 			<exclusions>
 

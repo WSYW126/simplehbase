@@ -9,10 +9,10 @@ import java.util.TreeMap;
 import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.CellUtil;
 import org.apache.hadoop.hbase.client.Get;
-import org.apache.hadoop.hbase.client.HBaseAdmin;
-import org.apache.hadoop.hbase.client.HTableInterface;
+import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.client.coprocessor.AggregationClient;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -38,9 +38,9 @@ abstract public class SimpleHbaseClientBase implements SimpleHbaseClient {
     protected SimpleHbaseRuntimeSetting simpleHbaseRuntimeSetting = new SimpleHbaseRuntimeSetting();
 
     /**
-     * Get HTableInterface.
+     * Get Table.
      * */
-    protected HTableInterface htableInterface() {
+    protected Table htableInterface() {
         return hbaseDataSource.getHTable(hbaseTableConfig.getHbaseTableSchema()
                 .getTableName());
     }
@@ -495,13 +495,13 @@ abstract public class SimpleHbaseClientBase implements SimpleHbaseClient {
     }
 
     @Override
-    public HTableInterface getTable(String tableName) {
+    public Table getTable(String tableName) {
         return hbaseDataSource.getHTable(tableName);
     }
 
     @Override
-    public HBaseAdmin getHBaseAdmin() {
-        return hbaseDataSource.getHBaseAdmin();
+    public Admin getHBaseAdmin() {
+        return hbaseDataSource.getAdmin();
     }
 
     @Override

@@ -31,8 +31,8 @@ public class DemoMain {
         //If run on hbase cluster, modify the following config files.
         //If run on hbase stand alone mode, comment out the following config files.
         hbaseConfigResources.add(new CachedFileSystemResource(
-                "demo\\hbase_site"));
-        hbaseConfigResources.add(new CachedFileSystemResource("demo\\zk_conf"));
+                "demo/hbase_site"));
+        hbaseConfigResources.add(new CachedFileSystemResource("demo/zk_conf"));
         hbaseDataSource.setHbaseConfigResources(hbaseConfigResources);
 
         hbaseDataSource.init();
@@ -40,7 +40,7 @@ public class DemoMain {
         HBaseTableConfig hbaseTableConfig = new HBaseTableConfig();
         //simplehbase config file.
         hbaseTableConfig.setConfigResource(new CachedFileSystemResource(
-                "demo\\myRecord.xml"));
+                "demo/myRecord.xml"));
 
         hbaseTableConfig.init();
 

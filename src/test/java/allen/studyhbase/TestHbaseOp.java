@@ -43,8 +43,8 @@ public class TestHbaseOp extends HbaseTestBase {
     @Test
     public void testGet_Normal_Null_Empty() throws Exception {
         Put put = new Put(rowKey_ForTest);
-        put.add(ColumnFamilyNameBytes, QName1, Bytes.toBytes("a"));
-        put.add(ColumnFamilyNameBytes, QName3, null);
+        put.addColumn(ColumnFamilyNameBytes, QName1, Bytes.toBytes("a"));
+        put.addColumn(ColumnFamilyNameBytes, QName3, null);
         table.put(put);
 
         Get get = new Get(rowKey_ForTest);
@@ -143,7 +143,7 @@ public class TestHbaseOp extends HbaseTestBase {
     }
 
     private void testScan_Filter(byte[] qualifer, int expectedSize,
-            String... rowKeys) throws Exception {
+                                 String... rowKeys) throws Exception {
 
         Scan scan = new Scan();
         scan.addColumn(ColumnFamilyNameBytes, qualifer);
@@ -152,7 +152,7 @@ public class TestHbaseOp extends HbaseTestBase {
     }
 
     private void testScan_FilterList(byte[] qualifer, int expectedSize,
-            String... rowKeys) throws Exception {
+                                     String... rowKeys) throws Exception {
 
         Scan scan = new Scan();
         scan.addColumn(ColumnFamilyNameBytes, qualifer);
@@ -194,7 +194,7 @@ public class TestHbaseOp extends HbaseTestBase {
     }
 
     private void testFilter_filterIfMissing(boolean filterIfMissing,
-            byte[] qualifer, int expectedSize, String... rowKeys)
+                                            byte[] qualifer, int expectedSize, String... rowKeys)
             throws Exception {
         Scan scan = new Scan(rowKey4, rowKey4);
         scan.addColumn(ColumnFamilyNameBytes, qualifer);
@@ -207,7 +207,7 @@ public class TestHbaseOp extends HbaseTestBase {
     }
 
     private void testFilter_filterIfMissing_family(boolean filterIfMissing,
-            int expectedSize, String... rowKeys) throws Exception {
+                                                   int expectedSize, String... rowKeys) throws Exception {
         Scan scan = new Scan(rowKey4, rowKey4);
         scan.addFamily(ColumnFamilyNameBytes);
         SingleColumnValueFilter filter = new SingleColumnValueFilter(
@@ -237,8 +237,8 @@ public class TestHbaseOp extends HbaseTestBase {
     public void testCheckAndPut() throws Exception {
         byte[] rowKey = rowKey_ForTest;
         Put put = new Put(rowKey);
-        put.add(ColumnFamilyNameBytes, QName1, Bytes.toBytes("a"));
-        put.add(ColumnFamilyNameBytes, QName2, Bytes.toBytes("b"));
+        put.addColumn(ColumnFamilyNameBytes, QName1, Bytes.toBytes("a"));
+        put.addColumn(ColumnFamilyNameBytes, QName2, Bytes.toBytes("b"));
 
         boolean result = false;
 

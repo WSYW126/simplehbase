@@ -1,28 +1,26 @@
 package com.alipay.simplehbase.config;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.client.HBaseAdmin;
-import org.apache.hadoop.hbase.client.HTable;
-import org.apache.hadoop.hbase.client.HTableInterface;
-
-import org.apache.log4j.Logger;
-import org.springframework.core.io.Resource;
-
 import com.alipay.simplehbase.exception.SimpleHBaseException;
-
 import com.alipay.simplehbase.util.ConfigUtil;
 import com.alipay.simplehbase.util.StringUtil;
 import com.alipay.simplehbase.util.TableNameUtil;
 import com.alipay.simplehbase.util.Util;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.client.Admin;
+import org.apache.hadoop.hbase.client.Connection;
+import org.apache.hadoop.hbase.client.ConnectionFactory;
+import org.apache.hadoop.hbase.client.Table;
+import org.apache.log4j.Logger;
+import org.springframework.core.io.Resource;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * HbaseDataSource represent one hbase data source.
- * 
+ *
  * @author xinzhi
  * */
 public class HBaseDataSource {
@@ -74,16 +72,16 @@ public class HBaseDataSource {
     }
 
     /**
-     * Get HTableInterface by table Name.
-     * 
+     * Get Table by table Name.
+     *
      * @param tableName tableName.
-     * @return HTableInterface.
+     * @return Table.
      * */
-    public HTableInterface getHTable(String tableName) {
+    public Table getHTable(String tableName) {
         Util.checkEmptyString(tableName);
         try {
-            return new HTable(hbaseConfiguration,
-                    TableNameUtil.getTableName(tableName));
+            Connection connection = ConnectionFactory.createConnection(hbaseConfiguration);
+            return connection.getTable(TableNameUtil.getTableName(tableName));
         } catch (Exception e) {
             log.error(e);
             throw new SimpleHBaseException(e);
@@ -91,11 +89,12 @@ public class HBaseDataSource {
     }
 
     /**
-     * Get one HBaseAdmin.
-     * */
-    public HBaseAdmin getHBaseAdmin() {
+     * Get one Admin.
+     */
+    public Admin getAdmin() {
         try {
-            return new HBaseAdmin(hbaseConfiguration);
+            Connection connection = ConnectionFactory.createConnection(hbaseConfiguration);
+            return connection.getAdmin();
         } catch (Exception e) {
             log.error(e);
             throw new SimpleHBaseException(e);

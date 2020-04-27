@@ -1,37 +1,43 @@
 package com.alipay.simplehbase.client;
 
-import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.NamespaceDescriptor;
-import org.apache.hadoop.hbase.client.HBaseAdmin;
-import org.apache.log4j.Logger;
-
 import com.alipay.simplehbase.config.HBaseDataSource;
 import com.alipay.simplehbase.exception.SimpleHBaseException;
+import com.alipay.simplehbase.util.TableNameUtil;
 import com.alipay.simplehbase.util.Util;
+import org.apache.hadoop.hbase.HTableDescriptor;
+import org.apache.hadoop.hbase.NamespaceDescriptor;
+import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.client.Admin;
+import org.apache.hadoop.hbase.client.TableDescriptor;
+import org.apache.hadoop.hbase.client.TableDescriptorBuilder;
+import org.apache.log4j.Logger;
 
 /**
- * SimpleHbaseAdminClient's implementation.
- * 
+ * SimpleHbaseAdminClientImpl's implementation.
+ *
  * @author xinzhi
  * */
 public class SimpleHbaseAdminClientImpl implements SimpleHbaseAdminClient {
 
-    /** log. */
-    private static Logger   log = Logger.getLogger(SimpleHbaseAdminClientImpl.class);
+    /**
+     * log.
+     */
+    private static Logger log = Logger.getLogger(SimpleHbaseAdminClientImpl.class);
     /**
      * HBaseDataSource.
-     * */
+     */
     private HBaseDataSource hbaseDataSource;
 
     @Override
-    public void createTable(HTableDescriptor tableDescriptor) {
-        Util.checkNull(tableDescriptor);
+    public void createTable(TableDescriptorBuilder tableDescriptorBuilder) {
+        Util.checkNull(tableDescriptorBuilder);
 
         try {
-            HBaseAdmin hbaseAdmin = hbaseDataSource.getHBaseAdmin();
-            NamespaceDescriptor[] namespaceDescriptors = hbaseAdmin
+            TableDescriptor build = tableDescriptorBuilder.build();
+            Admin Admin = hbaseDataSource.getAdmin();
+            NamespaceDescriptor[] namespaceDescriptors = Admin
                     .listNamespaceDescriptors();
-            String namespace = tableDescriptor.getTableName()
+            String namespace = build.getTableName()
                     .getNamespaceAsString();
             boolean isExist = false;
             for (NamespaceDescriptor nd : namespaceDescriptors) {
@@ -42,13 +48,14 @@ public class SimpleHbaseAdminClientImpl implements SimpleHbaseAdminClient {
             }
             log.info("namespace " + namespace + " isExist " + isExist);
             if (!isExist) {
-                hbaseAdmin.createNamespace(NamespaceDescriptor
+                Admin.createNamespace(NamespaceDescriptor
                         .create(namespace).build());
             }
 
-            hbaseAdmin.createTable(tableDescriptor);
-            HTableDescriptor newTableDescriptor = hbaseAdmin
-                    .getTableDescriptor(tableDescriptor.getName());
+            Admin.createTable(build);
+
+            HTableDescriptor newTableDescriptor = Admin
+                    .getTableDescriptor(build.getTableName());
             log.info("create table " + newTableDescriptor);
         } catch (Exception e) {
             log.error(e);
@@ -61,14 +68,15 @@ public class SimpleHbaseAdminClientImpl implements SimpleHbaseAdminClient {
         Util.checkEmptyString(tableName);
 
         try {
-            HBaseAdmin hbaseAdmin = hbaseDataSource.getHBaseAdmin();
+            TableName tableName1 = TableNameUtil.getTableName(tableName);
+            Admin Admin = hbaseDataSource.getAdmin();
             // delete table if table exist.
-            if (hbaseAdmin.tableExists(tableName)) {
+            if (Admin.tableExists(tableName1)) {
                 // disable table before delete it.
-                if (!hbaseAdmin.isTableDisabled(tableName)) {
-                    hbaseAdmin.disableTable(tableName);
+                if (!Admin.isTableDisabled(tableName1)) {
+                    Admin.disableTable(tableName1);
                 }
-                hbaseAdmin.deleteTable(tableName);
+                Admin.deleteTable(tableName1);
             }
         } catch (Exception e) {
             log.error(e);

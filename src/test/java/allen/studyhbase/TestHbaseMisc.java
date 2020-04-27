@@ -31,11 +31,11 @@ public class TestHbaseMisc extends HbaseTestBase {
 
         Put put = new Put(rowKey_ForTest);
 
-        put.add(ColumnFamilyNameBytes, QName1, 1L, Bytes.toBytes("a"));
+        put.addColumn(ColumnFamilyNameBytes, QName1, 1L, Bytes.toBytes("a"));
 
-        put.add(ColumnFamilyNameBytes, QName1, 2L, Bytes.toBytes("b"));
+        put.addColumn(ColumnFamilyNameBytes, QName1, 2L, Bytes.toBytes("b"));
 
-        put.add(ColumnFamilyNameBytes, QName1, 3L, Bytes.toBytes("c"));
+        put.addColumn(ColumnFamilyNameBytes, QName1, 3L, Bytes.toBytes("c"));
 
         table.put(put);
     }
@@ -50,7 +50,7 @@ public class TestHbaseMisc extends HbaseTestBase {
 
         Put put = new Put(rowKey_ForTest);
 
-        put.add(ColumnFamilyNameBytes, QName1, ts.getTime(), Bytes.toBytes("a"));
+        put.addColumn(ColumnFamilyNameBytes, QName1, ts.getTime(), Bytes.toBytes("a"));
 
         table.put(put);
 
@@ -77,8 +77,8 @@ public class TestHbaseMisc extends HbaseTestBase {
         recreateTable();
 
         Put put = new Put(rowKey_ForTest);
-        put.add(ColumnFamilyNameBytes, QName1, 1000, Bytes.toBytes("a"));
-        put.add(ColumnFamilyNameBytes, QName1, 2000, Bytes.toBytes("b"));
+        put.addColumn(ColumnFamilyNameBytes, QName1, 1000, Bytes.toBytes("a"));
+        put.addColumn(ColumnFamilyNameBytes, QName1, 2000, Bytes.toBytes("b"));
         table.put(put);
 
         Get get = new Get(rowKey_ForTest);
@@ -100,7 +100,7 @@ public class TestHbaseMisc extends HbaseTestBase {
         fillData();
 
         Delete delete = new Delete(rowKey_ForTest);
-        delete.deleteColumn(ColumnFamilyNameBytes, QName1);
+        delete.addColumn(ColumnFamilyNameBytes, QName1);
         table.delete(delete);
 
         Get get = new Get(rowKey_ForTest);
@@ -137,7 +137,7 @@ public class TestHbaseMisc extends HbaseTestBase {
         fillData();
 
         Delete delete = new Delete(rowKey_ForTest);
-        delete.deleteColumn(ColumnFamilyNameBytes, QName1, 2L);
+        delete.addColumn(ColumnFamilyNameBytes, QName1, 2L);
         table.delete(delete);
 
         Get get = new Get(rowKey_ForTest);
@@ -207,7 +207,7 @@ public class TestHbaseMisc extends HbaseTestBase {
         fillData();
 
         Delete delete = new Delete(rowKey_ForTest);
-        delete.deleteColumn(ColumnFamilyNameBytes, QName1, 2L);
+        delete.addColumn(ColumnFamilyNameBytes, QName1, 2L);
         table.delete(delete);
 
         Get get = new Get(rowKey_ForTest);
@@ -244,7 +244,7 @@ public class TestHbaseMisc extends HbaseTestBase {
         fillData();
 
         Delete delete = new Delete(rowKey_ForTest);
-        delete.deleteColumn(ColumnFamilyNameBytes, QName1, 3L);
+        delete.addColumn(ColumnFamilyNameBytes, QName1, 3L);
         table.delete(delete);
 
         Get get = new Get(rowKey_ForTest);

@@ -13,7 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.Delete;
-import org.apache.hadoop.hbase.client.HTableInterface;
+import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
@@ -34,9 +34,9 @@ import org.junit.Before;
 public abstract class HbaseTest {
 
     protected static Log             log                  = LogFactory
-                                                                  .getLog(HbaseTest.class);
+            .getLog(HbaseTest.class);
 
-    protected static HTableInterface table;
+    protected static Table table;
 
     protected static String          TableName;
     protected static byte[]          TableNameBytes;
@@ -94,7 +94,7 @@ public abstract class HbaseTest {
 
     /**
      * <pre>
-     * rowkey          f/q1            f/q2           f/q3 
+     * rowkey          f/q1            f/q2           f/q3
      * 1               1                2
      * 2               4                8
      * 3               16
@@ -108,42 +108,42 @@ public abstract class HbaseTest {
     private void fillData() throws Throwable {
 
         Put put = new Put(rowKey1);
-        put.add(ColumnFamilyNameBytes, QName1, Bytes.toBytes(1L));
-        put.add(ColumnFamilyNameBytes, QName2, Bytes.toBytes(2L));
+        put.addColumn(ColumnFamilyNameBytes, QName1, Bytes.toBytes(1L));
+        put.addColumn(ColumnFamilyNameBytes, QName2, Bytes.toBytes(2L));
         table.put(put);
 
         put = new Put(rowKey2);
-        put.add(ColumnFamilyNameBytes, QName1, Bytes.toBytes(4L));
-        put.add(ColumnFamilyNameBytes, QName2, Bytes.toBytes(8L));
+        put.addColumn(ColumnFamilyNameBytes, QName1, Bytes.toBytes(4L));
+        put.addColumn(ColumnFamilyNameBytes, QName2, Bytes.toBytes(8L));
         table.put(put);
 
         put = new Put(rowKey3);
-        put.add(ColumnFamilyNameBytes, QName1, Bytes.toBytes(16L));
+        put.addColumn(ColumnFamilyNameBytes, QName1, Bytes.toBytes(16L));
         table.put(put);
 
         put = new Put(rowKey4);
-        put.add(ColumnFamilyNameBytes, QName2, Bytes.toBytes(32L));
+        put.addColumn(ColumnFamilyNameBytes, QName2, Bytes.toBytes(32L));
         table.put(put);
 
         // set null case.
         put = new Put(rowKey5);
-        put.add(ColumnFamilyNameBytes, QName1, Bytes.toBytes(64L));
-        put.add(ColumnFamilyNameBytes, QName2, null);
+        put.addColumn(ColumnFamilyNameBytes, QName1, Bytes.toBytes(64L));
+        put.addColumn(ColumnFamilyNameBytes, QName2, null);
         table.put(put);
 
         put = new Put(rowKey6);
-        put.add(ColumnFamilyNameBytes, QName1, null);
-        put.add(ColumnFamilyNameBytes, QName2, Bytes.toBytes(128L));
+        put.addColumn(ColumnFamilyNameBytes, QName1, null);
+        put.addColumn(ColumnFamilyNameBytes, QName2, Bytes.toBytes(128L));
         table.put(put);
 
         put = new Put(rowKey7);
-        put.add(ColumnFamilyNameBytes, QName1, null);
-        put.add(ColumnFamilyNameBytes, QName2, null);
+        put.addColumn(ColumnFamilyNameBytes, QName1, null);
+        put.addColumn(ColumnFamilyNameBytes, QName2, null);
         table.put(put);
 
         // empty case.
         put = new Put(rowKey8);
-        put.add(ColumnFamilyNameBytes, QName3, Bytes.toBytes("test"));
+        put.addColumn(ColumnFamilyNameBytes, QName3, Bytes.toBytes("test"));
         table.put(put);
     }
 

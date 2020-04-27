@@ -23,7 +23,7 @@ public class TestGetAndScanPerf extends HbaseTestBase {
     @Test
     public void testGetAndScanPerf() throws Exception {
         Put put = new Put(rowKey_ForTest);
-        put.add(ColumnFamilyNameBytes, QName1, Bytes.toBytes("2"));
+        put.addColumn(ColumnFamilyNameBytes, QName1, Bytes.toBytes("2"));
         table.put(put);
 
         int loopSize = 1;

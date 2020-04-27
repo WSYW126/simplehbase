@@ -1,13 +1,5 @@
 package allen.test;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.HColumnDescriptor;
-import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.client.HTableInterface;
-import org.springframework.core.io.Resource;
-
 import com.alipay.simplehbase.client.SimpleHbaseAdminClient;
 import com.alipay.simplehbase.client.SimpleHbaseAdminClientImpl;
 import com.alipay.simplehbase.client.SimpleHbaseClient;
@@ -16,6 +8,15 @@ import com.alipay.simplehbase.client.SimpleHbaseClientImpl;
 import com.alipay.simplehbase.config.HBaseDataSource;
 import com.alipay.simplehbase.config.HBaseTableConfig;
 import com.alipay.simplehbase.util.TableNameUtil;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.client.ColumnFamilyDescriptorBuilder;
+import org.apache.hadoop.hbase.client.Table;
+import org.apache.hadoop.hbase.client.TableDescriptorBuilder;
+import org.apache.hadoop.hbase.util.Bytes;
+import org.springframework.core.io.Resource;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author xinzhi
@@ -27,10 +28,10 @@ public class Config {
     final public static String                     SimpleHbaseCpPath      = "hdfs://hbdev-1.alipay.net:9000/corp/jar/simplehbase-1.1.jar";
     final public static String                     SimpleHbaseCpClassName = "com.alipay.cp.ext2.CommonEndpointImpl2";
 
-    final public static String                     TestHqlNodeXmlFile     = "test\\hql\\testHqlNode.xml";
-    final public static String                     HbaseSiteFile          = "test\\hbase_site";
-    final public static String                     ZkConfigFile           = "test\\zk_conf";
-    final public static String                     MyRecordXmlFile        = "test\\hql\\myRecord.xml";
+    final public static String                     TestHqlNodeXmlFile     = "test/hql/testHqlNode.xml";
+    final public static String                     HbaseSiteFile          = "test/hbase_site";
+    final public static String                     ZkConfigFile           = "test/zk_conf";
+    final public static String                     MyRecordXmlFile        = "test/hql/myRecord.xml";
 
     final public static boolean                    isPerfTestOn           = false;
 
@@ -50,17 +51,15 @@ public class Config {
         return simpleHbaseClient.getHbaseDataSource().getHbaseConfiguration();
     }
 
-    public static HTableInterface getHTableInterface(String tableName) {
+    public static Table getHTableInterface(String tableName) {
         return simpleHbaseClient.getHbaseDataSource().getHTable(tableName);
     }
 
     public static void createTable() throws Exception {
         // create new table.
-        HTableDescriptor tableDescriptor = new HTableDescriptor(
-                TableNameUtil.getTableName(TableName));
-        tableDescriptor.addFamily(new HColumnDescriptor(ColumnFamilyName)
-                .setMaxVersions(3));
-        simpleHbaseAdminClient.createTable(tableDescriptor);
+        TableDescriptorBuilder tableDescriptorBuilder = TableDescriptorBuilder.newBuilder(TableNameUtil.getTableName(TableName));
+        tableDescriptorBuilder.setColumnFamily(ColumnFamilyDescriptorBuilder.newBuilder(Bytes.toBytes(ColumnFamilyName)).setMaxVersions(3).build());
+        simpleHbaseAdminClient.createTable(tableDescriptorBuilder);
 
     }
 
