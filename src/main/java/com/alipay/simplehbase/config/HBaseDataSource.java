@@ -17,6 +17,7 @@ import org.springframework.core.io.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * HbaseDataSource represent one hbase data source.
@@ -50,6 +51,14 @@ public class HBaseDataSource {
      * */
     private Configuration       hbaseConfiguration;
 
+
+    /**
+     * Connection instance.
+     * In theory, as the application starts init, there will only be one connection instance.
+     */
+    private final Map<Configuration, Connection> connectionInstances = new ConcurrentHashMap<Configuration, Connection>();
+
+
     /**
      * init dataSource.
      * */
@@ -80,8 +89,7 @@ public class HBaseDataSource {
     public Table getHTable(String tableName) {
         Util.checkEmptyString(tableName);
         try {
-            Connection connection = ConnectionFactory.createConnection(hbaseConfiguration);
-            return connection.getTable(TableNameUtil.getTableName(tableName));
+            return connectionInstances.get(hbaseConfiguration).getTable(TableNameUtil.getTableName(tableName));
         } catch (Exception e) {
             log.error(e);
             throw new SimpleHBaseException(e);
@@ -93,8 +101,7 @@ public class HBaseDataSource {
      */
     public Admin getAdmin() {
         try {
-            Connection connection = ConnectionFactory.createConnection(hbaseConfiguration);
-            return connection.getAdmin();
+            return connectionInstances.get(hbaseConfiguration).getAdmin();
         } catch (Exception e) {
             log.error(e);
             throw new SimpleHBaseException(e);
@@ -118,6 +125,10 @@ public class HBaseDataSource {
                 hbaseConfiguration.set(entry.getKey(), entry.getValue());
             }
 
+            synchronized (connectionInstances) {
+                Connection connection = ConnectionFactory.createConnection(hbaseConfiguration);
+                connectionInstances.put(hbaseConfiguration, connection);
+            }
         } catch (Exception e) {
             log.error("parseConfig error.", e);
             throw new SimpleHBaseException("parseConfig error.", e);
