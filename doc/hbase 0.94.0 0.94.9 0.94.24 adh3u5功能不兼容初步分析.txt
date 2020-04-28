@@ -28,7 +28,7 @@ Note:
 文中涉及的filter。
 
         SingleColumnValueFilter filter = new SingleColumnValueFilter(
-                ColumnFamilyNameBytes, QName1, CompareOp.GREATER_OR_EQUAL,
+                ColumnFamilyNameBytes, QName1, CompareOperator.GREATER_OR_EQUAL,
                 new BinaryComparator(Bytes.toBytes(4L)));
         scan.setFilter(filter);
 		

@@ -117,7 +117,7 @@ public class SimpleHbaseClientImpl extends SimpleHbaseClientBase {
 
             if (queryExtInfo != null) {
                 if (queryExtInfo.isMaxVersionSet()) {
-                    get.setMaxVersions(queryExtInfo.getMaxVersions());
+                    get.readVersions(queryExtInfo.getMaxVersions());
                 }
                 if (queryExtInfo.isTimeRangeSet()) {
                     get.setTimeRange(queryExtInfo.getMinStamp(),
@@ -228,7 +228,7 @@ public class SimpleHbaseClientImpl extends SimpleHbaseClientBase {
 
         if (queryExtInfo != null) {
             if (queryExtInfo.isMaxVersionSet()) {
-                scan.setMaxVersions(queryExtInfo.getMaxVersions());
+                scan.readVersions(queryExtInfo.getMaxVersions());
             }
             if (queryExtInfo.isTimeRangeSet()) {
                 try {
@@ -350,7 +350,7 @@ public class SimpleHbaseClientImpl extends SimpleHbaseClientBase {
 
             if (queryExtInfo != null) {
                 if (queryExtInfo.isMaxVersionSet()) {
-                    get.setMaxVersions(queryExtInfo.getMaxVersions());
+                    get.readVersions(queryExtInfo.getMaxVersions());
                 }
                 if (queryExtInfo.isTimeRangeSet()) {
                     get.setTimeRange(queryExtInfo.getMinStamp(),
@@ -402,7 +402,7 @@ public class SimpleHbaseClientImpl extends SimpleHbaseClientBase {
 
         if (queryExtInfo != null) {
             if (queryExtInfo.isMaxVersionSet()) {
-                scan.setMaxVersions(queryExtInfo.getMaxVersions());
+                scan.readVersions(queryExtInfo.getMaxVersions());
             }
             if (queryExtInfo.isTimeRangeSet()) {
                 try {
@@ -673,9 +673,18 @@ public class SimpleHbaseClientImpl extends SimpleHbaseClientBase {
         Table htableInterface = htableInterface();
         boolean result = false;
         try {
-            result = htableInterface.checkAndPut(rowKey.toBytes(),
-                    versionedColumnInfo.familyBytes,
-                    versionedColumnInfo.qualifierBytes, oldValueOfVersion, put);
+            if (null == oldValueOfVersion) {
+                result = htableInterface.checkAndMutate(rowKey.toBytes(), versionedColumnInfo.familyBytes)
+                        .qualifier(versionedColumnInfo.qualifierBytes)
+                        .ifNotExists()
+                        .thenPut(put);
+            } else {
+                result = htableInterface.checkAndMutate(rowKey.toBytes(), versionedColumnInfo.familyBytes)
+                        .qualifier(versionedColumnInfo.qualifierBytes)
+                        .ifEquals(oldValueOfVersion)
+                        .thenPut(put);
+            }
+
         } catch (IOException e) {
             throw new SimpleHBaseException("updateObjectWithVersion. rowKey="
                     + rowKey + " t=" + t + " oldVersion=" + oldVersion, e);
@@ -788,7 +797,7 @@ public class SimpleHbaseClientImpl extends SimpleHbaseClientBase {
         long length = Long.MAX_VALUE;
 
         if (queryExtInfo.isMaxVersionSet()) {
-            scan.setMaxVersions(queryExtInfo.getMaxVersions());
+            scan.readVersions(queryExtInfo.getMaxVersions());
         }
         if (queryExtInfo.isTimeRangeSet()) {
             try {

@@ -42,7 +42,7 @@ public class TestGetAndScanPerf extends HbaseTestBase {
 
         start = System.currentTimeMillis();
         for (int i = 0; i < loopSize; i++) {
-            Scan scan = new Scan(rowKey_ForTest, rowKey_ForTest);
+            Scan scan = new Scan().withStartRow(rowKey_ForTest).withStopRow(rowKey_ForTest);
             scan.setCaching(20);
             scan.addColumn(ColumnFamilyNameBytes, QName1);
             ResultScanner resultScanner = table.getScanner(scan);

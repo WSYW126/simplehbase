@@ -23,7 +23,7 @@ import org.apache.hadoop.hbase.filter.BinaryComparator;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.filter.FilterList;
 import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
-import org.apache.hadoop.hbase.filter.CompareFilter.CompareOp;
+import org.apache.hadoop.hbase.CompareOperator;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.junit.After;
 import org.junit.Before;
@@ -204,7 +204,7 @@ public abstract class HbaseTest {
 
     protected void applyDefaultFilter(Scan scan) {
         SingleColumnValueFilter filter = new SingleColumnValueFilter(
-                ColumnFamilyNameBytes, QName1, CompareOp.GREATER_OR_EQUAL,
+                ColumnFamilyNameBytes, QName1, CompareOperator.GREATER_OR_EQUAL,
                 new BinaryComparator(Bytes.toBytes(4L)));
         scan.setFilter(filter);
     }
@@ -214,12 +214,12 @@ public abstract class HbaseTest {
         List<Filter> filters = new ArrayList<Filter>();
 
         SingleColumnValueFilter filter1 = new SingleColumnValueFilter(
-                ColumnFamilyNameBytes, QName1, CompareOp.GREATER,
+                ColumnFamilyNameBytes, QName1, CompareOperator.GREATER,
                 new BinaryComparator(Bytes.toBytes(1L)));
         filters.add(filter1);
 
         SingleColumnValueFilter filter2 = new SingleColumnValueFilter(
-                ColumnFamilyNameBytes, QName2, CompareOp.EQUAL,
+                ColumnFamilyNameBytes, QName2, CompareOperator.EQUAL,
                 new BinaryComparator(Bytes.toBytes(32L)));
         filters.add(filter2);
 

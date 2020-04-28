@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.hadoop.hbase.filter.CompareFilter.CompareOp;
+import org.apache.hadoop.hbase.CompareOperator;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.filter.FilterList;
 import org.apache.hadoop.hbase.filter.FilterList.Operator;
@@ -119,7 +119,7 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
                 .parseHBaseColumnSchema(hbaseTableConfig, cidContext);
         Object object = ContextUtil.parsePara(varContext, para);
 
-        return constructFilter(hbaseColumnSchema, CompareOp.EQUAL, object);
+        return constructFilter(hbaseColumnSchema, CompareOperator.EQUAL, object);
     }
 
     @Override
@@ -132,7 +132,7 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
         Object object = ContextUtil.parseConstant(hbaseColumnSchema,
                 constantContext, runtimeSetting);
 
-        return constructFilter(hbaseColumnSchema, CompareOp.EQUAL, object);
+        return constructFilter(hbaseColumnSchema, CompareOperator.EQUAL, object);
     }
 
     @Override
@@ -140,7 +140,7 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
         CidContext cidContext = ctx.cid();
         HBaseColumnSchema hbaseColumnSchema = ContextUtil
                 .parseHBaseColumnSchema(hbaseTableConfig, cidContext);
-        return constructFilter(hbaseColumnSchema, CompareOp.EQUAL,
+        return constructFilter(hbaseColumnSchema, CompareOperator.EQUAL,
                 BytesUtil.EMPTY, true);
     }
 
@@ -149,7 +149,7 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
         CidContext cidContext = ctx.cid();
         HBaseColumnSchema hbaseColumnSchema = ContextUtil
                 .parseHBaseColumnSchema(hbaseTableConfig, cidContext);
-        return constructFilter(hbaseColumnSchema, CompareOp.NOT_EQUAL,
+        return constructFilter(hbaseColumnSchema, CompareOperator.NOT_EQUAL,
                 BytesUtil.EMPTY, true);
     }
 
@@ -163,7 +163,7 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
         Object object = ContextUtil.parseConstant(hbaseColumnSchema,
                 constantContext, runtimeSetting);
 
-        return constructFilter(hbaseColumnSchema, CompareOp.NOT_EQUAL, object);
+        return constructFilter(hbaseColumnSchema, CompareOperator.NOT_EQUAL, object);
     }
 
     @Override
@@ -174,7 +174,7 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
                 .parseHBaseColumnSchema(hbaseTableConfig, cidContext);
         Object object = ContextUtil.parsePara(varContext, para);
 
-        return constructFilter(hbaseColumnSchema, CompareOp.NOT_EQUAL, object);
+        return constructFilter(hbaseColumnSchema, CompareOperator.NOT_EQUAL, object);
     }
 
     @Override
@@ -187,7 +187,7 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
                 .parseHBaseColumnSchema(hbaseTableConfig, cidContext);
         Object object = ContextUtil.parsePara(varContext, para);
 
-        return constructFilter(hbaseColumnSchema, CompareOp.LESS, object);
+        return constructFilter(hbaseColumnSchema, CompareOperator.LESS, object);
     }
 
     @Override
@@ -200,7 +200,7 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
         Object object = ContextUtil.parseConstant(hbaseColumnSchema,
                 constantContext, runtimeSetting);
 
-        return constructFilter(hbaseColumnSchema, CompareOp.LESS, object);
+        return constructFilter(hbaseColumnSchema, CompareOperator.LESS, object);
 
     }
 
@@ -214,7 +214,7 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
         Object object = ContextUtil.parseConstant(hbaseColumnSchema,
                 constantContext, runtimeSetting);
 
-        return constructFilter(hbaseColumnSchema, CompareOp.LESS_OR_EQUAL,
+        return constructFilter(hbaseColumnSchema, CompareOperator.LESS_OR_EQUAL,
                 object);
     }
 
@@ -226,7 +226,7 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
         HBaseColumnSchema hbaseColumnSchema = ContextUtil
                 .parseHBaseColumnSchema(hbaseTableConfig, cidContext);
         Object object = ContextUtil.parsePara(varContext, para);
-        return constructFilter(hbaseColumnSchema, CompareOp.LESS_OR_EQUAL,
+        return constructFilter(hbaseColumnSchema, CompareOperator.LESS_OR_EQUAL,
                 object);
     }
 
@@ -240,7 +240,7 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
         Object object = ContextUtil.parseConstant(hbaseColumnSchema,
                 constantContext, runtimeSetting);
 
-        return constructFilter(hbaseColumnSchema, CompareOp.GREATER, object);
+        return constructFilter(hbaseColumnSchema, CompareOperator.GREATER, object);
     }
 
     @Override
@@ -251,7 +251,7 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
         HBaseColumnSchema hbaseColumnSchema = ContextUtil
                 .parseHBaseColumnSchema(hbaseTableConfig, cidContext);
         Object object = ContextUtil.parsePara(varContext, para);
-        return constructFilter(hbaseColumnSchema, CompareOp.GREATER, object);
+        return constructFilter(hbaseColumnSchema, CompareOperator.GREATER, object);
     }
 
     @Override
@@ -262,7 +262,7 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
         HBaseColumnSchema hbaseColumnSchema = ContextUtil
                 .parseHBaseColumnSchema(hbaseTableConfig, cidContext);
         Object object = ContextUtil.parsePara(varContext, para);
-        return constructFilter(hbaseColumnSchema, CompareOp.GREATER_OR_EQUAL,
+        return constructFilter(hbaseColumnSchema, CompareOperator.GREATER_OR_EQUAL,
                 object);
     }
 
@@ -276,12 +276,12 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
         Object object = ContextUtil.parseConstant(hbaseColumnSchema,
                 constantContext, runtimeSetting);
 
-        return constructFilter(hbaseColumnSchema, CompareOp.GREATER_OR_EQUAL,
+        return constructFilter(hbaseColumnSchema, CompareOperator.GREATER_OR_EQUAL,
                 object);
     }
 
     private static Filter constructFilter(HBaseColumnSchema hbaseColumnSchema,
-            CompareOp compareOp, Object object) {
+                                          CompareOperator compareOp, Object object) {
         Util.checkNull(hbaseColumnSchema);
 
         byte[] value = hbaseColumnSchema.getTypeHandler().toBytes(
@@ -290,7 +290,7 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
     }
 
     private static Filter constructFilter(HBaseColumnSchema hbaseColumnSchema,
-            CompareOp compareOp, byte[] value, boolean filterIfMissing) {
+            CompareOperator compareOp, byte[] value, boolean filterIfMissing) {
         Util.checkNull(hbaseColumnSchema);
         Util.checkNull(compareOp);
         Util.checkNull(value);
@@ -311,7 +311,7 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
         CidContext cidContext = ctx.cid();
         HBaseColumnSchema hbaseColumnSchema = ContextUtil
                 .parseHBaseColumnSchema(hbaseTableConfig, cidContext);
-        return constructFilter(hbaseColumnSchema, CompareOp.GREATER_OR_EQUAL,
+        return constructFilter(hbaseColumnSchema, CompareOperator.GREATER_OR_EQUAL,
                 BytesUtil.EMPTY, true);
     }
 
@@ -320,7 +320,7 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
         CidContext cidContext = ctx.cid();
         HBaseColumnSchema hbaseColumnSchema = ContextUtil
                 .parseHBaseColumnSchema(hbaseTableConfig, cidContext);
-        return constructFilter(hbaseColumnSchema, CompareOp.LESS,
+        return constructFilter(hbaseColumnSchema, CompareOperator.LESS,
                 BytesUtil.EMPTY, false);
     }
 
@@ -334,7 +334,7 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
         Object object = ContextUtil.parseConstant(hbaseColumnSchema,
                 constantContext, runtimeSetting);
 
-        return constructFilterWithRegex(hbaseColumnSchema, CompareOp.NOT_EQUAL,
+        return constructFilterWithRegex(hbaseColumnSchema, CompareOperator.NOT_EQUAL,
                 object);
     }
 
@@ -347,7 +347,7 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
                 .parseHBaseColumnSchema(hbaseTableConfig, cidContext);
         Object object = ContextUtil.parsePara(varContext, para);
 
-        return constructFilterWithRegex(hbaseColumnSchema, CompareOp.NOT_EQUAL,
+        return constructFilterWithRegex(hbaseColumnSchema, CompareOperator.NOT_EQUAL,
                 object);
     }
 
@@ -360,7 +360,7 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
                 .parseHBaseColumnSchema(hbaseTableConfig, cidContext);
         Object object = ContextUtil.parsePara(varContext, para);
 
-        return constructFilterWithRegex(hbaseColumnSchema, CompareOp.EQUAL,
+        return constructFilterWithRegex(hbaseColumnSchema, CompareOperator.EQUAL,
                 object);
     }
 
@@ -374,18 +374,18 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
         Object object = ContextUtil.parseConstant(hbaseColumnSchema,
                 constantContext, runtimeSetting);
 
-        return constructFilterWithRegex(hbaseColumnSchema, CompareOp.EQUAL,
+        return constructFilterWithRegex(hbaseColumnSchema, CompareOperator.EQUAL,
                 object);
     }
 
     private static Filter constructFilterWithRegex(
-            HBaseColumnSchema hbaseColumnSchema, CompareOp compareOp,
+            HBaseColumnSchema hbaseColumnSchema, CompareOperator compareOp,
             Object object) {
         Util.checkNull(hbaseColumnSchema);
         Util.checkNull(compareOp);
         Util.checkNull(object);
 
-        if (compareOp != CompareOp.EQUAL && compareOp != CompareOp.NOT_EQUAL) {
+        if (compareOp != CompareOperator.EQUAL && compareOp != CompareOperator.NOT_EQUAL) {
             throw new SimpleHBaseException(
                     "only EQUAL or NOT_EQUAL can use regex match. compareOp = "
                             + compareOp);
@@ -426,7 +426,7 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
                 constantContextList, runtimeSetting);
 
         return constructFilterForContain(hbaseColumnSchema,
-                CompareOp.NOT_EQUAL, list, Operator.MUST_PASS_ALL);
+                CompareOperator.NOT_EQUAL, list, Operator.MUST_PASS_ALL);
     }
 
     @Override
@@ -439,7 +439,7 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
         Object object = ContextUtil.parsePara(varContext, para);
 
         return constructFilterForContain(hbaseColumnSchema,
-                CompareOp.NOT_EQUAL, (List<Object>) object,
+                CompareOperator.NOT_EQUAL, (List<Object>) object,
                 Operator.MUST_PASS_ALL);
     }
 
@@ -452,7 +452,7 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
                 .parseHBaseColumnSchema(hbaseTableConfig, cidContext);
         Object object = ContextUtil.parsePara(varContext, para);
 
-        return constructFilterForContain(hbaseColumnSchema, CompareOp.EQUAL,
+        return constructFilterForContain(hbaseColumnSchema, CompareOperator.EQUAL,
                 (List<Object>) object, Operator.MUST_PASS_ONE);
     }
 
@@ -468,12 +468,12 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
         List<Object> list = ContextUtil.parseConstantList(hbaseColumnSchema,
                 constantContextList, runtimeSetting);
 
-        return constructFilterForContain(hbaseColumnSchema, CompareOp.EQUAL,
+        return constructFilterForContain(hbaseColumnSchema, CompareOperator.EQUAL,
                 list, Operator.MUST_PASS_ONE);
     }
 
     private static Filter constructFilterForContain(
-            HBaseColumnSchema hbaseColumnSchema, CompareOp compareOp,
+            HBaseColumnSchema hbaseColumnSchema, CompareOperator compareOp,
             List<Object> list, Operator operator) {
         Util.checkNull(hbaseColumnSchema);
         Util.checkNull(compareOp);
@@ -500,10 +500,10 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
         List<Object> list = ContextUtil.parseConstantList(hbaseColumnSchema,
                 constantContextList, runtimeSetting);
 
-        Filter startFilter = constructFilter(hbaseColumnSchema, CompareOp.LESS,
+        Filter startFilter = constructFilter(hbaseColumnSchema, CompareOperator.LESS,
                 list.get(0));
         Filter endFilter = constructFilter(hbaseColumnSchema,
-                CompareOp.GREATER, list.get(1));
+                CompareOperator.GREATER, list.get(1));
 
         FilterList filterList = new FilterList(Operator.MUST_PASS_ONE,
                 Arrays.asList(startFilter, endFilter));
@@ -519,10 +519,10 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
                 .parseHBaseColumnSchema(hbaseTableConfig, cidContext);
         List<Object> list = ContextUtil.parseParaList(varContextList, para);
 
-        Filter startFilter = constructFilter(hbaseColumnSchema, CompareOp.LESS,
+        Filter startFilter = constructFilter(hbaseColumnSchema, CompareOperator.LESS,
                 list.get(0));
         Filter endFilter = constructFilter(hbaseColumnSchema,
-                CompareOp.GREATER, list.get(1));
+                CompareOperator.GREATER, list.get(1));
 
         FilterList filterList = new FilterList(Operator.MUST_PASS_ONE,
                 Arrays.asList(startFilter, endFilter));
@@ -540,9 +540,9 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
         List<Object> list = ContextUtil.parseParaList(varContextList, para);
 
         Filter startFilter = constructFilter(hbaseColumnSchema,
-                CompareOp.GREATER_OR_EQUAL, list.get(0));
+                CompareOperator.GREATER_OR_EQUAL, list.get(0));
         Filter endFilter = constructFilter(hbaseColumnSchema,
-                CompareOp.LESS_OR_EQUAL, list.get(1));
+                CompareOperator.LESS_OR_EQUAL, list.get(1));
 
         FilterList filterList = new FilterList(Operator.MUST_PASS_ALL,
                 Arrays.asList(startFilter, endFilter));
@@ -561,9 +561,9 @@ public class FilterVisitor extends StatementsBaseVisitor<Filter> {
                 constantContextList, runtimeSetting);
 
         Filter startFilter = constructFilter(hbaseColumnSchema,
-                CompareOp.GREATER_OR_EQUAL, list.get(0));
+                CompareOperator.GREATER_OR_EQUAL, list.get(0));
         Filter endFilter = constructFilter(hbaseColumnSchema,
-                CompareOp.LESS_OR_EQUAL, list.get(1));
+                CompareOperator.LESS_OR_EQUAL, list.get(1));
 
         FilterList filterList = new FilterList(Operator.MUST_PASS_ALL,
                 Arrays.asList(startFilter, endFilter));

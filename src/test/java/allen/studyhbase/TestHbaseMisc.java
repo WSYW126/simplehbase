@@ -55,7 +55,7 @@ public class TestHbaseMisc extends HbaseTestBase {
         table.put(put);
 
         Set<String> resultRowKeys = new HashSet<String>();
-        Scan scan = new Scan(rowKey_ForTest, rowKey_ForTest);
+        Scan scan = new Scan().withStartRow(rowKey_ForTest).withStopRow(rowKey_ForTest);
         scan.setTimeRange(ts.getTime(), ts.getTime());
 
         ResultScanner resultScanner = table.getScanner(scan);
@@ -82,7 +82,7 @@ public class TestHbaseMisc extends HbaseTestBase {
         table.put(put);
 
         Get get = new Get(rowKey_ForTest);
-        get.setMaxVersions(10);
+        get.readVersions(10);
         Result result = table.get(get);
         Cell[] cells = result.rawCells();
         Assert.assertEquals(2, cells.length);
@@ -105,21 +105,21 @@ public class TestHbaseMisc extends HbaseTestBase {
 
         Get get = new Get(rowKey_ForTest);
         get.addColumn(ColumnFamilyNameBytes, QName1);
-        get.setMaxVersions(3);
+        get.readVersions(3);
 
-        get.setTimeStamp(3L);
+        get.setTimestamp(3L);
         Result result = table.get(get);
         Assert.assertEquals(0, result.rawCells().length);
 
-        get.setTimeStamp(2L);
+        get.setTimestamp(2L);
         result = table.get(get);
         Assert.assertEquals(1, result.rawCells().length);
 
-        get.setTimeStamp(1L);
+        get.setTimestamp(1L);
         result = table.get(get);
         Assert.assertEquals(1, result.rawCells().length);
 
-        get.setTimeStamp(0L);
+        get.setTimestamp(0L);
         result = table.get(get);
         Assert.assertEquals(0, result.rawCells().length);
 
@@ -142,21 +142,21 @@ public class TestHbaseMisc extends HbaseTestBase {
 
         Get get = new Get(rowKey_ForTest);
         get.addColumn(ColumnFamilyNameBytes, QName1);
-        get.setMaxVersions(3);
+        get.readVersions(3);
 
-        get.setTimeStamp(3L);
+        get.setTimestamp(3L);
         Result result = table.get(get);
         Assert.assertEquals(1, result.rawCells().length);
 
-        get.setTimeStamp(2L);
+        get.setTimestamp(2L);
         result = table.get(get);
         Assert.assertEquals(0, result.rawCells().length);
 
-        get.setTimeStamp(1L);
+        get.setTimestamp(1L);
         result = table.get(get);
         Assert.assertEquals(1, result.rawCells().length);
 
-        get.setTimeStamp(0L);
+        get.setTimestamp(0L);
         result = table.get(get);
         Assert.assertEquals(0, result.rawCells().length);
 
@@ -175,21 +175,21 @@ public class TestHbaseMisc extends HbaseTestBase {
 
         Get get = new Get(rowKey_ForTest);
         get.addColumn(ColumnFamilyNameBytes, QName1);
-        get.setMaxVersions(3);
+        get.readVersions(3);
 
-        get.setTimeStamp(3L);
+        get.setTimestamp(3L);
         Result result = table.get(get);
         Assert.assertEquals(1, result.rawCells().length);
 
-        get.setTimeStamp(2L);
+        get.setTimestamp(2L);
         result = table.get(get);
         Assert.assertEquals(1, result.rawCells().length);
 
-        get.setTimeStamp(1L);
+        get.setTimestamp(1L);
         result = table.get(get);
         Assert.assertEquals(1, result.rawCells().length);
 
-        get.setTimeStamp(0L);
+        get.setTimestamp(0L);
         result = table.get(get);
         Assert.assertEquals(0, result.rawCells().length);
 
@@ -212,21 +212,21 @@ public class TestHbaseMisc extends HbaseTestBase {
 
         Get get = new Get(rowKey_ForTest);
         get.addColumn(ColumnFamilyNameBytes, QName1);
-        get.setMaxVersions(1);
+        get.readVersions(1);
 
-        get.setTimeStamp(3L);
+        get.setTimestamp(3L);
         Result result = table.get(get);
         Assert.assertEquals(1, result.rawCells().length);
 
-        get.setTimeStamp(2L);
+        get.setTimestamp(2L);
         result = table.get(get);
         Assert.assertEquals(0, result.rawCells().length);
 
-        get.setTimeStamp(1L);
+        get.setTimestamp(1L);
         result = table.get(get);
         Assert.assertEquals(1, result.rawCells().length);
 
-        get.setTimeStamp(0L);
+        get.setTimestamp(0L);
         result = table.get(get);
         Assert.assertEquals(0, result.rawCells().length);
 
@@ -249,24 +249,24 @@ public class TestHbaseMisc extends HbaseTestBase {
 
         Get get = new Get(rowKey_ForTest);
         get.addColumn(ColumnFamilyNameBytes, QName1);
-        get.setMaxVersions(1);
+        get.readVersions(1);
 
         Result result = table.get(get);
         Assert.assertEquals(1, result.rawCells().length);
 
-        get.setTimeStamp(3L);
+        get.setTimestamp(3L);
         result = table.get(get);
         Assert.assertEquals(0, result.rawCells().length);
 
-        get.setTimeStamp(2L);
+        get.setTimestamp(2L);
         result = table.get(get);
         Assert.assertEquals(1, result.rawCells().length);
 
-        get.setTimeStamp(1L);
+        get.setTimestamp(1L);
         result = table.get(get);
         Assert.assertEquals(1, result.rawCells().length);
 
-        get.setTimeStamp(0L);
+        get.setTimestamp(0L);
         result = table.get(get);
         Assert.assertEquals(0, result.rawCells().length);
 

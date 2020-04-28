@@ -4,7 +4,6 @@ import com.alipay.simplehbase.config.HBaseDataSource;
 import com.alipay.simplehbase.exception.SimpleHBaseException;
 import com.alipay.simplehbase.util.TableNameUtil;
 import com.alipay.simplehbase.util.Util;
-import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.NamespaceDescriptor;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Admin;
@@ -54,8 +53,7 @@ public class SimpleHbaseAdminClientImpl implements SimpleHbaseAdminClient {
 
             Admin.createTable(build);
 
-            HTableDescriptor newTableDescriptor = Admin
-                    .getTableDescriptor(build.getTableName());
+            TableDescriptor newTableDescriptor = Admin.getDescriptor(build.getTableName());
             log.info("create table " + newTableDescriptor);
         } catch (Exception e) {
             log.error(e);

@@ -1,7 +1,6 @@
 package allen.studyhbase;
 
-import java.util.TreeSet;
-
+import org.apache.hadoop.hbase.CompareOperator;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Put;
@@ -10,15 +9,15 @@ import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.BinaryComparator;
 import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
-import org.apache.hadoop.hbase.filter.CompareFilter.CompareOp;
-
 import org.apache.hadoop.hbase.util.Bytes;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.TreeSet;
+
 /**
  * @author xinzhi.zhang
- * */
+ */
 public class TestHbaseOp extends HbaseTestBase {
 
     @Test
@@ -110,16 +109,16 @@ public class TestHbaseOp extends HbaseTestBase {
 
     @Test
     public void testScan() throws Exception {
-        testScan(new Scan(rowKey1, rowKey2), 1, rowKeyStr1);
-        testScan(new Scan(rowKey1, rowKey1), 1, rowKeyStr1);
-        testScan(new Scan(rowKey5, (byte[]) null), 4, rowKeyStr5, rowKeyStr6,
+        testScan(new Scan().withStartRow(rowKey1).withStopRow(rowKey2), 1, rowKeyStr1);
+        testScan(new Scan().withStartRow(rowKey1).withStopRow(rowKey1), 1, rowKeyStr1);
+        testScan(new Scan().withStartRow(rowKey5).withStopRow((byte[]) null), 4, rowKeyStr5, rowKeyStr6,
                 rowKeyStr7, rowKeyStr8);
     }
 
     @Test
     public void testScan_withColumn() throws Exception {
 
-        Scan scan = new Scan(rowKey1);
+        Scan scan = new Scan().withStartRow(rowKey1);
         scan.addColumn(ColumnFamilyNameBytes, QName1);
         testScan(scan, 6, rowKeyStr1, rowKeyStr2, rowKeyStr3, rowKeyStr5,
                 rowKeyStr6, rowKeyStr7);
@@ -128,7 +127,7 @@ public class TestHbaseOp extends HbaseTestBase {
     @Test
     public void testScan_withColumn_NonExistColumn() throws Exception {
 
-        Scan scan = new Scan(rowKey1);
+        Scan scan = new Scan().withStartRow(rowKey1);
         scan.addColumn(ColumnFamilyNameBytes, QName_NotExistColumn);
         testScan(scan, 0, (String[]) null);
     }
@@ -136,7 +135,7 @@ public class TestHbaseOp extends HbaseTestBase {
     @Test
     public void testScan_withFamily() throws Exception {
 
-        Scan scan = new Scan(rowKey1);
+        Scan scan = new Scan().withStartRow(rowKey1);
         scan.addFamily(ColumnFamilyNameBytes);
         testScan(scan, 8, rowKeyStr1, rowKeyStr2, rowKeyStr3, rowKeyStr4,
                 rowKeyStr5, rowKeyStr6, rowKeyStr7, rowKeyStr8);
@@ -196,10 +195,10 @@ public class TestHbaseOp extends HbaseTestBase {
     private void testFilter_filterIfMissing(boolean filterIfMissing,
                                             byte[] qualifer, int expectedSize, String... rowKeys)
             throws Exception {
-        Scan scan = new Scan(rowKey4, rowKey4);
+        Scan scan = new Scan().withStartRow(rowKey4).withStopRow(rowKey4);
         scan.addColumn(ColumnFamilyNameBytes, qualifer);
         SingleColumnValueFilter filter = new SingleColumnValueFilter(
-                ColumnFamilyNameBytes, QName1, CompareOp.GREATER_OR_EQUAL,
+                ColumnFamilyNameBytes, QName1, CompareOperator.GREATER_OR_EQUAL,
                 new BinaryComparator(Bytes.toBytes(4L)));
         filter.setFilterIfMissing(filterIfMissing);
         scan.setFilter(filter);
@@ -208,10 +207,10 @@ public class TestHbaseOp extends HbaseTestBase {
 
     private void testFilter_filterIfMissing_family(boolean filterIfMissing,
                                                    int expectedSize, String... rowKeys) throws Exception {
-        Scan scan = new Scan(rowKey4, rowKey4);
+        Scan scan = new Scan().withStartRow(rowKey4).withStopRow(rowKey4);
         scan.addFamily(ColumnFamilyNameBytes);
         SingleColumnValueFilter filter = new SingleColumnValueFilter(
-                ColumnFamilyNameBytes, QName1, CompareOp.GREATER_OR_EQUAL,
+                ColumnFamilyNameBytes, QName1, CompareOperator.GREATER_OR_EQUAL,
                 new BinaryComparator(Bytes.toBytes(4L)));
         filter.setFilterIfMissing(filterIfMissing);
         scan.setFilter(filter);
@@ -242,23 +241,20 @@ public class TestHbaseOp extends HbaseTestBase {
 
         boolean result = false;
 
-        result = table.checkAndPut(rowKey, ColumnFamilyNameBytes, QName2,
-                Bytes.toBytes("b"), put);
+        result = table.checkAndMutate(rowKey, ColumnFamilyNameBytes).qualifier(QName2).ifEquals(Bytes.toBytes("b")).thenPut(put);
         // check fail, put fail.
         Assert.assertFalse(result);
 
-        result = table.checkAndPut(rowKey, ColumnFamilyNameBytes, QName2, null,
-                put);
+        result = table.checkAndMutate(rowKey, ColumnFamilyNameBytes).qualifier(QName2).ifNotExists().thenPut(put);
         // check ok, put ok.
         Assert.assertTrue(result);
 
-        result = table.checkAndPut(rowKey, ColumnFamilyNameBytes, QName2, null,
-                put);
+        result = table.checkAndMutate(rowKey, ColumnFamilyNameBytes).qualifier(QName2).ifNotExists().thenPut(put);
         // check fail, put fail.
         Assert.assertFalse(result);
 
-        result = table.checkAndPut(rowKey, ColumnFamilyNameBytes, QName2,
-                Bytes.toBytes("b"), put);
+        result = table.checkAndMutate(rowKey, ColumnFamilyNameBytes).qualifier(QName2).ifEquals(Bytes.toBytes("b")).thenPut(put);
+
         // check ok, put ok.
         Assert.assertTrue(result);
     }

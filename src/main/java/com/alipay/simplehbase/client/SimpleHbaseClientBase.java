@@ -99,9 +99,7 @@ abstract public class SimpleHbaseClientBase implements SimpleHbaseClient {
         Util.checkRowKey(startRowKey);
         Util.checkRowKey(endRowKey);
 
-        Scan scan = new Scan();
-        scan.setStartRow(startRowKey.toBytes());
-        scan.setStopRow(endRowKey.toBytes());
+        Scan scan = new Scan().withStartRow(startRowKey.toBytes()).withStopRow(endRowKey.toBytes());
 
         int cachingSize = getScanCaching();
 
